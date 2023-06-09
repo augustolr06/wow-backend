@@ -6,3 +6,233 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model area {
+  id                     Int     @id
+  name                   String? @db.VarChar(64)
+  quest_quest_areaToarea quest[] @relation("quest_areaToarea")
+}
+
+model item {
+  id                                           Int            @id
+  binding                                      bindingtype?
+  durability                                   Int?
+  inventory_type                               inventorytype?
+  is_equippable                                Boolean?
+  is_stackable                                 Boolean?
+  item_class                                   itemclass?
+  item_stats                                   Int?
+  item_subclass                                itemsubclass?
+  level                                        Int?
+  max_count                                    Int?
+  name                                         String?        @db.VarChar(64)
+  purchase_price                               Int?
+  purchase_quantity                            Int?
+  quality                                      String?        @db.VarChar(16)
+  required_level                               Int?
+  sell_price                                   Int?
+  spells                                       Int[]
+  unique_equipped                              Boolean?
+  weapon_stats                                 Int?
+  item_stats_item_item_statsToitem_stats       item_stats?    @relation("item_item_statsToitem_stats", fields: [item_stats], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_itemstats")
+  weapon_stats_item_weapon_statsToweapon_stats weapon_stats?  @relation("item_weapon_statsToweapon_stats", fields: [weapon_stats], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_weapon_stats")
+}
+
+model item_stats {
+  id                               Int    @id
+  agility                          Int?
+  avoidance                        Int?
+  critical_strike                  Int?
+  fire_resistance                  Int?
+  frost_resistance                 Int?
+  haste                            Int?
+  intellect                        Int?
+  leech                            Int?
+  mana                             Int?
+  mastery                          Int?
+  nature_resistance                Int?
+  parry                            Int?
+  shadow_resistance                Int?
+  stamina                          Int?
+  strength                         Int?
+  versatility                      Int?
+  item_item_item_statsToitem_stats item[] @relation("item_item_statsToitem_stats")
+}
+
+model quest {
+  id                    Int                 @id
+  title                 String?             @db.VarChar(64)
+  area                  Int?
+  description           String?             @db.VarChar
+  requirements          Int?
+  rewards               Int?
+  area_quest_areaToarea area?               @relation("quest_areaToarea", fields: [area], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_area")
+  quest_requirements    quest_requirements? @relation(fields: [requirements], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_requirements")
+  quest_rewards         quest_rewards?      @relation(fields: [rewards], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rewards")
+}
+
+model quest_requirements {
+  id                  Int     @id
+  min_character_level Int?
+  max_character_level Int?
+  faction             String? @db.VarChar(7)
+  quest               quest[]
+}
+
+model quest_rewards {
+  id          Int     @id
+  experience  Int?
+  money       Int?
+  reputations Int[]
+  items       Int[]
+  quest       quest[]
+}
+
+model weapon_stats {
+  id                                   Int         @id
+  min_damage                           Int?
+  max_damage                           Int?
+  damage_class                         damagetype?
+  item_item_weapon_statsToweapon_stats item[]      @relation("item_weapon_statsToweapon_stats")
+}
+
+enum bindingtype {
+  Vincula_se_quando_usado     @map("Vincula-se quando usado")
+  Vincula___conta             @map("Vincula à conta")
+  Vincula_se_quando_equipado  @map("Vincula-se quando equipado")
+  Vincula___conta_da_Blizzard @map("Vincula à conta da Blizzard")
+  Item_de_miss_o              @map("Item de missão")
+  Vincula_se_ao_ser_recolhido @map("Vincula-se ao ser recolhido")
+  EMPTY_ENUM_VALUE            @map("")
+}
+
+enum damagetype {
+  EMPTY_ENUM_VALUE @map("")
+  Fogo
+  Sagrado
+  Natureza
+  Arcano
+  Gelo
+  Sombra
+  F_sico           @map("Físico")
+}
+
+enum inventorytype {
+  Berloque
+  Bolsa
+  Cabe_a                      @map("Cabeça")
+  Camisa
+  Cintura
+  Costas
+  Dedo
+  Duas_m_os                   @map("Duas mãos")
+  Empunhado_na_m_o_secund_ria @map("Empunhado na mão secundária")
+  Ferramenta_de_profiss_o     @map("Ferramenta de profissão")
+  Longo_alcance               @map("Longo alcance")
+  M_o_principal               @map("Mão principal")
+  M_o_Secund_ria              @map("Mão Secundária")
+  M_os                        @map("Mãos")
+  N_o_equip_vel               @map("Não equipável")
+  Ombros
+  Pernas
+  Pesco_o                     @map("Pescoço")
+  Pulsos
+  P_s                         @map("Pés")
+  Tabardo
+  Torso
+  Uma_M_o                     @map("Uma Mão")
+  EMPTY_ENUM_VALUE            @map("")
+}
+
+enum itemclass {
+  Aperfei_oamento_de_Item @map("Aperfeiçoamento de Item")
+  Arma
+  Armadura
+  Chave
+  Consum_vel              @map("Consumível")
+  Diversos
+  Gema
+  Miss_o                  @map("Missão")
+  Per_cia_profissional    @map("Perícia profissional")
+  Profiss_o               @map("Profissão")
+  Reagente
+  Receita
+  Recipiente
+  EMPTY_ENUM_VALUE        @map("")
+}
+
+enum itemquality {
+  Artefato
+  Comum
+  Heran_a          @map("Herança")
+  Incomum
+  Inferior
+  Lend_rio         @map("Lendário")
+  Raro
+  pico             @map("Épico")
+  EMPTY_ENUM_VALUE @map("")
+}
+
+enum itemsubclass {
+  Acelera__o                @map("Aceleração")
+  Acerto_Cr_tico            @map("Acerto Crítico")
+  Adaga
+  Agilidade
+  Alfaiataria
+  Alquimia
+  Arco
+  Arma_de_fogo              @map("Arma de fogo")
+  Arma_de_Haste             @map("Arma de Haste")
+  Arma_de_Punho             @map("Arma de Punho")
+  Arma
+  Bandagens
+  Besta
+  Bolsa
+  Cajado
+  Chave
+  Comida_e_Bebida           @map("Comida e Bebida")
+  Cosm_tico                 @map("Cosmético")
+  Couraria
+  Couro
+  Culin_ria                 @map("Culinária")
+  Diversos
+  Elemental
+  Elixires
+  Encantamento
+  Engenharia
+  Escrivania
+  Escudo
+  Espada
+  Explosivos_e_Dispositivos @map("Explosivos e Dispositivos")
+  Feriado
+  Ferraria
+  Frascos
+  Glaives_de_Guerra         @map("Glaives de Guerra")
+  Intelecto
+  Joalheria
+  Machado
+  Maestria
+  Malha
+  Mascotes
+  Ma_a                      @map("Maça")
+  Metal_e_Pedra             @map("Metal e Pedra")
+  Miss_o                    @map("Missão")
+  Montaria
+  Ombros
+  Outro
+  Pedra_chave               @map("Pedra-chave")
+  Pesca
+  Pe_as                     @map("Peças")
+  Placas
+  Planta
+  Po__es                    @map("Poções")
+  Reagente
+  Reagentes_de_Finaliza__o  @map("Reagentes de Finalização")
+  Reagentes_Opcionais       @map("Reagentes Opcionais")
+  Rel_quia_de_Artefato      @map("Relíquia de Artefato")
+  Sacola_de_Reagentes       @map("Sacola de Reagentes")
+  Sucata
+  Tecido
+  Varinha
+  EMPTY_ENUM_VALUE          @map("")
+}
