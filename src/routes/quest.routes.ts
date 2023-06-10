@@ -1,13 +1,16 @@
 import { Router } from "express";
-import { GetQuestController } from "../modules/quests/useCases/getQuests/GetQuestController";
 import { ListQuestsController } from "../modules/quests/useCases/listQuests/ListQuestsController";
+import { GetQuestController } from "../modules/quests/useCases/getQuests/GetQuestController";
+import { GetQuestsByFiltersController } from "../modules/quests/useCases/getQuestsByFilters/GetQuestsByFiltersController";
 
-const getQuestController = new GetQuestController();
 const listQuestsController = new ListQuestsController();
+const getQuestController = new GetQuestController();
+const getQuestsByFiltersController = new GetQuestsByFiltersController();
 
 const questRoutes = Router();
 
-questRoutes.get("/:id", getQuestController.handle);
 questRoutes.get("/", listQuestsController.handle);
+questRoutes.get("/id/:id", getQuestController.handle);
+questRoutes.get("/filters", getQuestsByFiltersController.handle);
 
 export { questRoutes };
