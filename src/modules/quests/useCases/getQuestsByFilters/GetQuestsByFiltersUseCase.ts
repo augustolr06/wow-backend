@@ -5,20 +5,10 @@ import { QuestFiltersDTO } from "../../dtos/QuestFiltersDTO";
 
 export class GetQuestsByFiltersUseCase {
   async execute(filters: QuestFiltersDTO): Promise<quest[]> {
-    // verificando se os filtros foram passados
-    console.log("filters before: ", filters);
     if (!filters) {
       throw new AppError("Filters not found");
     }
 
-    /** TASKS:
-     * - separar os atributos de quests e de seus relacionamentos.
-     * - Tratar cada atributo de acordo com o tipo de dado.
-     * - buscar as quests de acordo com os filtros;
-     */
-
-    // separando os atributos de quests e de seus relacionamentos
-    // questAttributes => separar as keys de filters por ponto (split(".")). Ex: "area.id" => ["area", "id"]. Se a primeira posição do array for igual a "quests", então questAttributes = ["id"].
     const questAttributes = Object.keys(filters)
       .filter((key) => {
         const keyArray = key.split(".");
@@ -59,7 +49,6 @@ export class GetQuestsByFiltersUseCase {
         return keyArray[1];
       });
 
-    // tratando cada atributo de acordo com o tipo de dado
     Object.entries(filters).map(([key, value]) => {
       if (
         key === "quests.id" ||
@@ -84,14 +73,44 @@ export class GetQuestsByFiltersUseCase {
         key === "rewards.items" ||
         key === "requirements.faction"
       ) {
-        filters[key] = value.split(",");
+        filters[key] = value && value.split(",");
       }
     });
 
-    // testando se os atributos de quests foram tratados corretamente
-    console.log("filters after: ", filters);
-
-    // buscando as quests de acordo com os filtros
+    const quests = await prisma.quest.findMany({
+      where: {
+        AND: questAttributes.map((atribute) => {
+          return {
+            [atribute]:
+              filters[("quests." + atribute) as keyof QuestFiltersDTO],
+          };
+        }),
+        quest_rewards: {
+          AND: rewardsAttributes.map((atribute) => {
+            return {
+              [atribute]:
+                filters[("rewards." + atribute) as keyof QuestFiltersDTO],
+            };
+          }),
+        },
+        quest_requirements: {
+          AND: requirementsAttributes.map((atribute) => {
+            return {
+              [atribute]:
+                filters[("requirements." + atribute) as keyof QuestFiltersDTO],
+            };
+          }),
+        },
+        area_quest_areaToarea: {
+          AND: areaAttributes.map((atribute) => {
+            return {
+              [atribute]:
+                filters[("area." + atribute) as keyof QuestFiltersDTO],
+            };
+          }),
+        },
+      },
+    });
 
     if (!quests) {
       throw new AppError("Quests not found");
