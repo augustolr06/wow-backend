@@ -29,6 +29,11 @@ export class GetQuestsByFiltersUseCase {
         return keyArray[1];
       });
 
+    const rewardsIncludes: Record<string, boolean> = {};
+    for (let i = 0; i < rewardsAttributes.length; i++) {
+      rewardsIncludes[rewardsAttributes[i]] = true;
+    }
+
     const requirementsAttributes = Object.keys(filters)
       .filter((key) => {
         const keyArray = key.split(".");
@@ -39,6 +44,11 @@ export class GetQuestsByFiltersUseCase {
         return keyArray[1];
       });
 
+    const requirementsIncludes: Record<string, boolean> = {};
+    for (let i = 0; i < requirementsAttributes.length; i++) {
+      requirementsIncludes[requirementsAttributes[i]] = true;
+    }
+
     const areaAttributes = Object.keys(filters)
       .filter((key) => {
         const keyArray = key.split(".");
@@ -48,6 +58,11 @@ export class GetQuestsByFiltersUseCase {
         const keyArray = key.split(".");
         return keyArray[1];
       });
+
+    const areaIncludes: Record<string, boolean> = {};
+    for (let i = 0; i < areaAttributes.length; i++) {
+      areaIncludes[areaAttributes[i]] = true;
+    }
 
     Object.entries(filters).map(([key, value]) => {
       if (
@@ -76,6 +91,11 @@ export class GetQuestsByFiltersUseCase {
         filters[key] = value && value.split(",");
       }
     });
+
+    Object.keys(rewardsIncludes).length === 0 && console.log("rewardsIncludes");
+    Object.keys(requirementsIncludes).length === 0 &&
+      console.log("requirementsIncludes");
+    Object.keys(areaIncludes).length === 0 && console.log("areaIncludes");
 
     const quests = await prisma.quest.findMany({
       where: {
@@ -109,6 +129,26 @@ export class GetQuestsByFiltersUseCase {
             };
           }),
         },
+      },
+      include: {
+        quest_rewards:
+          Object.keys(rewardsIncludes).length !== 0
+            ? {
+                select: rewardsIncludes,
+              }
+            : false,
+        quest_requirements:
+          Object.keys(requirementsIncludes).length !== 0
+            ? {
+                select: requirementsIncludes,
+              }
+            : false,
+        area_quest_areaToarea:
+          Object.keys(areaIncludes).length !== 0
+            ? {
+                select: areaIncludes,
+              }
+            : false,
       },
     });
 
