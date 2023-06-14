@@ -29,10 +29,8 @@ export class GetQuestsByFiltersUseCase {
         return keyArray[1];
       });
 
-    const rewardsIncludes: Record<string, boolean> = {};
-    for (let i = 0; i < rewardsAttributes.length; i++) {
-      rewardsIncludes[rewardsAttributes[i]] = true;
-    }
+    rewardsAttributes.splice(rewardsAttributes.indexOf("reputation"), 1);
+    rewardsAttributes.splice(rewardsAttributes.indexOf("items"), 1);
 
     const requirementsAttributes = Object.keys(filters)
       .filter((key) => {
@@ -44,10 +42,7 @@ export class GetQuestsByFiltersUseCase {
         return keyArray[1];
       });
 
-    const requirementsIncludes: Record<string, boolean> = {};
-    for (let i = 0; i < requirementsAttributes.length; i++) {
-      requirementsIncludes[requirementsAttributes[i]] = true;
-    }
+    requirementsAttributes.splice(requirementsAttributes.indexOf("faction"), 1);
 
     const areaAttributes = Object.keys(filters)
       .filter((key) => {
@@ -58,11 +53,6 @@ export class GetQuestsByFiltersUseCase {
         const keyArray = key.split(".");
         return keyArray[1];
       });
-
-    const areaIncludes: Record<string, boolean> = {};
-    for (let i = 0; i < areaAttributes.length; i++) {
-      areaIncludes[areaAttributes[i]] = true;
-    }
 
     Object.entries(filters).map(([key, value]) => {
       if (
@@ -81,21 +71,22 @@ export class GetQuestsByFiltersUseCase {
         filters[key] = Number(value);
       }
     });
-    // tratando o atributos do tipo array
-    Object.entries(filters).map(([key, value]) => {
-      if (
-        key === "rewards.reputation" ||
-        key === "rewards.items" ||
-        key === "requirements.faction"
-      ) {
-        filters[key] = value && value.split(",");
+
+    const rewardsItemsArray: number[] = [];
+    const rewardsReputationsArray: number[] = [];
+    Object.entries(filters).forEach(([key, value]) => {
+      if (key === "rewards.items") {
+        const teste = value.toString().split(",").map(Number);
+        rewardsItemsArray.push(...teste);
+      }
+      if (key === "rewards.reputation") {
+        const teste = value.toString().split(",").map(Number);
+        rewardsReputationsArray.push(...teste);
       }
     });
 
-    Object.keys(rewardsIncludes).length === 0 && console.log("rewardsIncludes");
-    Object.keys(requirementsIncludes).length === 0 &&
-      console.log("requirementsIncludes");
-    Object.keys(areaIncludes).length === 0 && console.log("areaIncludes");
+    console.log(rewardsItemsArray);
+    console.log(rewardsReputationsArray);
 
     const quests = await prisma.quest.findMany({
       where: {
@@ -112,6 +103,18 @@ export class GetQuestsByFiltersUseCase {
                 filters[("rewards." + atribute) as keyof QuestFiltersDTO],
             };
           }),
+          OR: [
+            {
+              reputations: {
+                hasSome: rewardsReputationsArray,
+              },
+            },
+            {
+              items: {
+                hasSome: rewardsItemsArray,
+              },
+            },
+          ],
         },
         quest_requirements: {
           AND: requirementsAttributes.map((atribute) => {
@@ -129,26 +132,6 @@ export class GetQuestsByFiltersUseCase {
             };
           }),
         },
-      },
-      include: {
-        quest_rewards:
-          Object.keys(rewardsIncludes).length !== 0
-            ? {
-                select: rewardsIncludes,
-              }
-            : false,
-        quest_requirements:
-          Object.keys(requirementsIncludes).length !== 0
-            ? {
-                select: requirementsIncludes,
-              }
-            : false,
-        area_quest_areaToarea:
-          Object.keys(areaIncludes).length !== 0
-            ? {
-                select: areaIncludes,
-              }
-            : false,
       },
     });
 
