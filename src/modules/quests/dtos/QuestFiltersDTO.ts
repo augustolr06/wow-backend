@@ -19,8 +19,14 @@
 // }
 
 export interface QuestFiltersDTO {
-  atributos: string[];
-  tabelas: string[];
-  hasFilters: boolean;
-  filtros: Record<string, string>;
+  attributes?: {
+    table: string;
+    column: string;
+  }[];
+  filters?: {
+    table: string;
+    column: string;
+    operator: string;
+    value: string | number;
+  }[];
 }
