@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { GetQuestsByFiltersUseCase } from "./GetQuestsByFiltersUseCase";
+import { GetItemsByFiltersUseCase } from "./GetItemsByFiltersUseCase";
 
-export class GetQuestsByFiltersController {
+export class GetItemsByFiltersController {
   async handle(request: Request, response: Response): Promise<Response> {
     const { attributes, filters } = request.query;
 
@@ -13,26 +13,12 @@ export class GetQuestsByFiltersController {
       return { table, column };
     });
 
-    // filtros que serão disponibilizados para o usuário:
-    // quests.title
-    // quest_area.name
-    // quest_requirements.min_character_level
-    // quest_requirements.max_character_level
-    // quest_requirements.faction
-    // quest_rewards.experience
-    // quest_rewards.money
-
-    // filtros que são do tipo number:
-    // quest_requirements.min_character_level
-    // quest_requirements.max_character_level
-    // quest_rewards.experience
-    // quest_rewards.money
-
+    // TODO: escolher os filtros numericos para colocar aqui
     const numberFilters = [
-      "quest_requirements.min_character_level",
-      "quest_requirements.max_character_level",
-      "quest_rewards.experience",
-      "quest_rewards.money",
+      "item.durability",
+      "item.max_count",
+      "item.purchase_price",
+      "item.purchase_quantity",
     ];
 
     const handledFilters = arrayFiltros.map((filter) => {
@@ -50,13 +36,13 @@ export class GetQuestsByFiltersController {
       return { table, column, operator, value };
     });
 
-    const getQuestsByFiltersUseCase = new GetQuestsByFiltersUseCase();
+    const getItemsByFiltersUseCase = new GetItemsByFiltersUseCase();
 
-    const quests = await getQuestsByFiltersUseCase.execute({
+    const items = await getItemsByFiltersUseCase.execute({
       attributes: separatedAttributes,
       filters: handledFilters,
     });
 
-    return response.json(quests);
+    return response.json(items);
   }
 }
