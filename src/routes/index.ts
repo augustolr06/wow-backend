@@ -11,12 +11,12 @@ import { weaponStatsRoutes } from "./weaponStats.routes";
 const routes = Router();
 
 routes.use("/general", generalRoutes);
-routes.use("/quests", questRoutes);
-routes.use("/items", itemRoutes);
-routes.use("/areas", areaRoutes);
-routes.use("/questRequirements", questRequirementsRoutes);
-routes.use("/questRewards", questRewardsRoutes);
-routes.use("/itemStats", itemStatsRoutes);
-routes.use("/weaponStats", weaponStatsRoutes);
+routes.use("/quest", questRoutes);
+routes.use("/item", itemRoutes);
+routes.use("/area", areaRoutes);
+routes.use("/quest_requirements", questRequirementsRoutes);
+routes.use("/quest_rewards", questRewardsRoutes);
+routes.use("/item_stats", itemStatsRoutes);
+routes.use("/weapon_stats", weaponStatsRoutes);
 
 export { routes };
