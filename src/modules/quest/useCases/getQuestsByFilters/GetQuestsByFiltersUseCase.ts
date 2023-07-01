@@ -48,6 +48,9 @@ export class GetQuestsByFiltersUseCase {
       };
     }, {});
 
+    console.log("select", select);
+    console.log("where", where);
+
     const quests = await prisma.quest.findMany({
       select,
       where,

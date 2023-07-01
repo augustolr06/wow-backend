@@ -7,6 +7,6 @@ export interface QuestFiltersDTO {
     table: string;
     column: string;
     operator: string;
-    value: string | number;
+    value: string | number | string[] | number[];
   }[];
 }

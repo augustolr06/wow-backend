@@ -1,6 +1,6 @@
 import { prisma } from "../../../../prisma/client";
 import { AppError } from "../../../../errors/AppError";
-import { GetColumnsDTO } from "../../dtos/GetTablesAndColumnsNamesDTO";
+import { GetColumnsDTO } from "../../dtos/GeneralDTO";
 
 type TableExists = [
   {
@@ -17,9 +17,12 @@ export class GetColumnsByTableUseCase {
       throw new AppError("Table does not exist!");
     }
 
-    const columns: GetColumnsDTO["columns"] =
+    const columnsInfo: [] =
       await prisma.$queryRaw`SELECT column_name FROM information_schema.columns WHERE table_name = ${table}`;
 
+    const columns = columnsInfo?.map((column) => {
+      return column["column_name"];
+    });
     return {
       columns,
     };

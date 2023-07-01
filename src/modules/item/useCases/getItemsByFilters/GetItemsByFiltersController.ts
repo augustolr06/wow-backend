@@ -15,6 +15,7 @@ export class GetItemsByFiltersController {
 
     // TODO: escolher os filtros numericos para colocar aqui
     const numberFilters = [
+      "item.id",
       "item.durability",
       "item.max_count",
       "item.purchase_price",

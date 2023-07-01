@@ -1,5 +1,5 @@
 export interface GetTablesDTO {
-  tables: [];
+  tables: string[];
 }
 
 export interface GetColumnsDTO {

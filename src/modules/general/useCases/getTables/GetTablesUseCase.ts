@@ -1,18 +1,21 @@
 import { prisma } from "../../../../prisma/client";
 import { AppError } from "../../../../errors/AppError";
-import { GetTablesDTO } from "../../dtos/GetTablesAndColumnsNamesDTO";
+import { GetTablesDTO } from "../../dtos/GeneralDTO";
 
 export class GetTablesUseCase {
   async execute(): Promise<GetTablesDTO> {
-    const tables: [] = await prisma.$queryRaw`SELECT table_name
+    const tablesInfo: [] = await prisma.$queryRaw`SELECT table_name
       FROM information_schema.tables
       WHERE table_schema = 'public'
           AND table_type = 'BASE TABLE';`;
 
-    if (!tables) {
+    if (!tablesInfo) {
       throw new AppError("Tables not found", 404);
     }
-    console.log("tables: ", tables);
+
+    const tables = tablesInfo?.map((table) => {
+      return table["table_name"];
+    });
 
     return {
       tables,
