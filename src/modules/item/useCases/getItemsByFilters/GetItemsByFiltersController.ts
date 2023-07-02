@@ -5,22 +5,39 @@ export class GetItemsByFiltersController {
   async handle(request: Request, response: Response): Promise<Response> {
     const { attributes, filters } = request.query;
 
-    const arrayAtributos = attributes?.toString().split(",") ?? [];
-    const arrayFiltros = filters?.toString().split(",") ?? [];
+    const arrayAtributos =
+      attributes
+        ?.toString()
+        .split(",")
+        .filter((attribute) => attribute !== "") ?? [];
+    const arrayFiltros =
+      filters
+        ?.toString()
+        .split(",")
+        .filter((filter) => filter !== "") ?? [];
+
+    console.log("arrayAtributos", arrayAtributos);
 
     const separatedAttributes = arrayAtributos.map((attribute) => {
       const [table, column] = attribute.split(".");
       return { table, column };
     });
 
-    // TODO: escolher os filtros numericos para colocar aqui
     const numberFilters = [
       "item.id",
       "item.durability",
+      "item.item_stats",
+      "item.level",
       "item.max_count",
       "item.purchase_price",
       "item.purchase_quantity",
+      "item.required_level",
+      "item.sell_price",
+      "item.weapon_stats",
     ];
+
+    const arrayNumberFilters = [];
+    const arrayStringFilters = ["item.spells"];
 
     const handledFilters = arrayFiltros.map((filter) => {
       const [table, column, operator, oldValue] = filter.split(".");

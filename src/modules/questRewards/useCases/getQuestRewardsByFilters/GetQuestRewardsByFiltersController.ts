@@ -12,9 +12,19 @@ export class GetQuestRewardsByFiltersController {
       const [table, column] = attribute.split(".");
       return { table, column };
     });
-    //TODO: filtros disponiveis para o usuário
 
-    const numberFilters = ["quest_rewards.experience", "quest_rewards.money"];
+    const numberFilters = [
+      "quest_rewards.id",
+      "quest_rewards.experience",
+      "quest_rewards.money",
+    ];
+
+    const arrayNumberFilters = [
+      "quest_rewards.reputation",
+      "quest_rewards.items",
+    ];
+
+    // Não possui atributos de array de string;
 
     const handledFilters = arrayFiltros.map((filter) => {
       const [table, column, operator, oldValue] = filter.split(".");

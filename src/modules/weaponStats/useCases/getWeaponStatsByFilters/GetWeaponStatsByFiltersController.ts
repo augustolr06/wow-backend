@@ -13,13 +13,13 @@ export class GetWeaponStatsByFiltersController {
       return { table, column };
     });
 
-    // TODO: escolher os filtros numericos para colocar aqui
     const numberFilters = [
-      "item.durability",
-      "item.max_count",
-      "item.purchase_price",
-      "item.purchase_quantity",
+      "weapon_stats.id",
+      "weapon_stats.min_damage",
+      "weapon_stats.max_damage",
     ];
+
+    // não possui atributos de array;
 
     const handledFilters = arrayFiltros.map((filter) => {
       const [table, column, operator, oldValue] = filter.split(".");

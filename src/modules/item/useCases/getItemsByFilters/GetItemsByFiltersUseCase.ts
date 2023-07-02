@@ -48,10 +48,24 @@ export class GetItemsByFiltersUseCase {
       };
     }, {});
 
-    const items = await prisma.item.findMany({
-      select,
-      where,
-    });
+    console.log("select", select);
+    console.log("where", where);
+
+    const items =
+      !select && !where
+        ? await prisma.item.findMany({
+            select,
+            where,
+          })
+        : !select && where
+        ? await prisma.item.findMany({
+            where,
+          })
+        : !where && select
+        ? await prisma.item.findMany({
+            select,
+          })
+        : await prisma.item.findMany();
 
     if (!items) {
       throw new AppError("Items not found", 404);

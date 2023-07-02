@@ -13,11 +13,13 @@ export class GetQuestRequirementsByFiltersController {
       return { table, column };
     });
 
-    // TODO: Escolhe os filtros disponíveis
     const numberFilters = [
+      "quest_requirements.id",
       "quest_requirements.max_character_level",
       "quest_requirements.min_character_level",
     ];
+
+    // não possui atributos de array;
 
     const handledFilters = arrayFiltros.map((filter) => {
       const [table, column, operator, oldValue] = filter.split(".");

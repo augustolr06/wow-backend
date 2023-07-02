@@ -13,19 +13,11 @@ export class GetItemStatsByFiltersController {
       return { table, column };
     });
 
-    // TODO: escolher os filtros numericos para colocar aqui
-    const numberFilters = ["item_stats.agility"];
-
+    // todas as colunas são do tipo number.
     const handledFilters = arrayFiltros.map((filter) => {
-      const [table, column, operator, oldValue] = filter.split(".");
-      let value;
-      if (numberFilters.includes(`${table}.${column}`)) {
-        value = Number(oldValue);
-      } else {
-        value = oldValue;
-      }
+      const [table, column, operator, value] = filter.split(".");
 
-      return { table, column, operator, value };
+      return { table, column, operator, value: Number(value) };
     });
 
     const getItemStatsByFiltersUseCase = new GetItemStatsByFiltersUseCase();

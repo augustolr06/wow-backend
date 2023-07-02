@@ -14,21 +14,6 @@ export class GetQuestsByFiltersController {
       return { table, column };
     });
 
-    // TODO: filtros que serão disponibilizados para o usuário:
-    // quests.title
-    // quest_area.name
-    // quest_requirements.min_character_level
-    // quest_requirements.max_character_level
-    // quest_requirements.faction
-    // quest_rewards.experience
-    // quest_rewards.money
-
-    // filtros que são do tipo number:
-    // quest_requirements.min_character_level
-    // quest_requirements.max_character_level
-    // quest_rewards.experience
-    // quest_rewards.money
-
     const numberFilters = [
       "quest.id",
       "quest_requirements.id",
@@ -40,13 +25,13 @@ export class GetQuestsByFiltersController {
       "area_quest_areaToarea.id",
     ];
 
-    const arrayStringFilters = ["quest_rewards.faction"];
+    const arrayStringFilters = ["quest_rewards.reputation"];
     const arrayNumberFilters = ["quest_rewards.items"];
 
     const handledFilters = arrayFiltros.map((filter) => {
       const [oldTable, column, operator, oldValue] = filter.split(".");
       let value;
-      const table = oldTable === "area" ? "area_quest_areaToarea" : oldTable;
+      const table = oldTable === "area" ? "area_quest_areaToarea" : oldTable; // TODO: remover isso se der certo no front
       if (numberFilters.includes(`${table}.${column}`)) {
         value = Number(oldValue);
       } else {

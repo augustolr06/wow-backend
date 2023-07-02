@@ -37,6 +37,7 @@ export class GetQuestRewardsByFiltersUseCase {
           ...acc,
           [filter.column]: {
             [filter.operator]: filter.value,
+            mode: "insensitive",
           },
         };
       }
@@ -46,6 +47,7 @@ export class GetQuestRewardsByFiltersUseCase {
         [filter.table]: {
           [filter.column]: {
             [filter.operator]: filter.value,
+            mode: "insensitive",
           },
         },
       };
