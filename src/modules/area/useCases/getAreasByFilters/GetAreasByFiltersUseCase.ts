@@ -34,7 +34,6 @@ export class GetAreasByFiltersUseCase {
           ...acc,
           [filter.column]: {
             [filter.operator]: filter.value,
-            mode: "insensitive",
           },
         };
       }
@@ -44,7 +43,6 @@ export class GetAreasByFiltersUseCase {
         [filter.table]: {
           [filter.column]: {
             [filter.operator]: filter.value,
-            mode: "insensitive",
           },
         },
       };

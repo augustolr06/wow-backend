@@ -12,51 +12,66 @@ export class GetQuestRequirementsByFiltersUseCase {
       throw new AppError("Attributes not found", 404);
     }
 
-    const select = attributes?.reduce((acc: Record<string, any>, attribute) => {
-      if (attribute.table === "quest_requirements") {
-        return {
-          ...acc,
-          [attribute.column]: true,
-        };
-      }
+    const select =
+      attributes.length > 0
+        ? attributes.reduce((acc: Record<string, any>, attribute) => {
+            if (attribute.table === "quest_requirements") {
+              return {
+                ...acc,
+                [attribute.column]: true,
+              };
+            }
 
-      return {
-        ...acc,
-        [attribute.table]: {
-          select: {
-            ...acc[attribute.table]?.select,
-            [attribute.column]: true,
-          },
-        },
-      };
-    }, {});
+            return {
+              ...acc,
+              [attribute.table]: {
+                select: {
+                  ...acc[attribute.table]?.select,
+                  [attribute.column]: true,
+                },
+              },
+            };
+          }, {})
+        : null;
 
-    const where = filters?.reduce((acc, filter) => {
-      if (filter.table === "quest_requirements") {
-        return {
-          ...acc,
-          [filter.column]: {
-            [filter.operator]: filter.value,
-            mode: "insensitive",
-          },
-        };
-      }
+    const where =
+      filters.length > 0
+        ? filters.reduce((acc, filter) => {
+            if (filter.table === "quest_requirements") {
+              return {
+                ...acc,
+                [filter.column]: {
+                  [filter.operator]: filter.value,
+                },
+              };
+            }
 
-      return {
-        ...acc,
-        [filter.table]: {
-          [filter.column]: {
-            [filter.operator]: filter.value,
-            mode: "insensitive",
-          },
-        },
-      };
-    }, {});
+            return {
+              ...acc,
+              [filter.table]: {
+                [filter.column]: {
+                  [filter.operator]: filter.value,
+                },
+              },
+            };
+          }, {})
+        : null;
 
-    const questRequirements = await prisma.quest_requirements.findMany({
-      select,
-      where,
-    });
+    const questRequirements =
+      select && where
+        ? await prisma.quest_requirements.findMany({
+            select,
+            where,
+          })
+        : !select && where
+        ? await prisma.quest_requirements.findMany({
+            where,
+          })
+        : select && !where
+        ? await prisma.quest_requirements.findMany({
+            select,
+          })
+        : await prisma.quest_requirements.findMany();
 
     if (!questRequirements) {
       throw new AppError("QuestRequirements not found", 404);

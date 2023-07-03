@@ -12,51 +12,66 @@ export class GetItemStatsByFiltersUseCase {
       throw new AppError("Attributes not found", 404);
     }
 
-    const select = attributes?.reduce((acc: Record<string, any>, attribute) => {
-      if (attribute.table === "item_stats") {
-        return {
-          ...acc,
-          [attribute.column]: true,
-        };
-      }
+    const select =
+      attributes.length > 0
+        ? attributes.reduce((acc: Record<string, any>, attribute) => {
+            if (attribute.table === "item_stats") {
+              return {
+                ...acc,
+                [attribute.column]: true,
+              };
+            }
 
-      return {
-        ...acc,
-        [attribute.table]: {
-          select: {
-            ...acc[attribute.table]?.select,
-            [attribute.column]: true,
-          },
-        },
-      };
-    }, {});
+            return {
+              ...acc,
+              [attribute.table]: {
+                select: {
+                  ...acc[attribute.table]?.select,
+                  [attribute.column]: true,
+                },
+              },
+            };
+          }, {})
+        : null;
 
-    const where = filters?.reduce((acc, filter) => {
-      if (filter.table === "item_stats") {
-        return {
-          ...acc,
-          [filter.column]: {
-            [filter.operator]: filter.value,
-            mode: "insensitive",
-          },
-        };
-      }
+    const where =
+      filters.length > 0
+        ? filters.reduce((acc, filter) => {
+            if (filter.table === "item_stats") {
+              return {
+                ...acc,
+                [filter.column]: {
+                  [filter.operator]: filter.value,
+                },
+              };
+            }
 
-      return {
-        ...acc,
-        [filter.table]: {
-          [filter.column]: {
-            [filter.operator]: filter.value,
-            mode: "insensitive",
-          },
-        },
-      };
-    }, {});
+            return {
+              ...acc,
+              [filter.table]: {
+                [filter.column]: {
+                  [filter.operator]: filter.value,
+                },
+              },
+            };
+          }, {})
+        : null;
 
-    const itemStats = await prisma.item_stats.findMany({
-      select,
-      where,
-    });
+    const itemStats =
+      select && where
+        ? await prisma.item_stats.findMany({
+            select,
+            where,
+          })
+        : !select && where
+        ? await prisma.item_stats.findMany({
+            where,
+          })
+        : select && !where
+        ? await prisma.item_stats.findMany({
+            select,
+          })
+        : await prisma.item_stats.findMany();
 
     if (!itemStats) {
       throw new AppError("ItemStats not found", 404);

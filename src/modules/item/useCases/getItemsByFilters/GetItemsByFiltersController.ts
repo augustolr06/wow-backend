@@ -51,6 +51,7 @@ export class GetItemsByFiltersController {
 
     const getItemsByFiltersUseCase = new GetItemsByFiltersUseCase();
 
+    console.log(separatedAttributes, handledFilters);
     const items = await getItemsByFiltersUseCase.execute({
       attributes: separatedAttributes,
       filters: handledFilters,
