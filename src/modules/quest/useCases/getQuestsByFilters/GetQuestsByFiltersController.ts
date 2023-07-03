@@ -16,6 +16,9 @@ export class GetQuestsByFiltersController {
 
     const numberFilters = [
       "quest.id",
+      "quest.area",
+      "quest.requirements",
+      "quest.rewards",
       "quest_requirements.id",
       "quest_requirements.min_character_level",
       "quest_requirements.max_character_level",
