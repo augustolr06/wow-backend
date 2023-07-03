@@ -77,6 +77,6 @@ export class GetQuestRequirementsByFiltersUseCase {
       throw new AppError("QuestRequirements not found", 404);
     }
 
-    return questRequirements as unknown as quest_requirements[];
+    return questRequirements as quest_requirements[];
   }
 }

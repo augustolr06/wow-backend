@@ -74,6 +74,6 @@ export class GetItemsByFiltersUseCase {
       throw new AppError("Items not found", 404);
     }
 
-    return items as unknown as item[];
+    return items as item[];
   }
 }

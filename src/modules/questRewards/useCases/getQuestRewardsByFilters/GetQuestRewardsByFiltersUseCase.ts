@@ -77,6 +77,6 @@ export class GetQuestRewardsByFiltersUseCase {
       throw new AppError("QuestsRewards not found", 404);
     }
 
-    return questRewards as unknown as quest_rewards[];
+    return questRewards as quest_rewards[];
   }
 }

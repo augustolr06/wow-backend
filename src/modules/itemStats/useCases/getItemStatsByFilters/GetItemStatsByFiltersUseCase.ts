@@ -77,6 +77,6 @@ export class GetItemStatsByFiltersUseCase {
       throw new AppError("ItemStats not found", 404);
     }
 
-    return itemStats as unknown as item_stats[];
+    return itemStats as item_stats[];
   }
 }

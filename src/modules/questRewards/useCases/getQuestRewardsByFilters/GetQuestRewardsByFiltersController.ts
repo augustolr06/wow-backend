@@ -35,6 +35,10 @@ export class GetQuestRewardsByFiltersController {
         value = oldValue;
       }
 
+      if (arrayNumberFilters.includes(`${table}.${column}`)) {
+        value = oldValue.split("|").map((item) => Number(item));
+      }
+
       return { table, column, operator, value };
     });
 

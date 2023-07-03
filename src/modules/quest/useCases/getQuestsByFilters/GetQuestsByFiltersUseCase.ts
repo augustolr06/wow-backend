@@ -2,13 +2,9 @@ import { quest } from "@prisma/client";
 import { AppError } from "../../../../errors/AppError";
 import { prisma } from "../../../../prisma/client";
 import { QuestFiltersDTO } from "../../dtos/QuestFiltersDTO";
-import { QuestResultsDTO } from "../../dtos/QuestResultsDTO";
 
 export class GetQuestsByFiltersUseCase {
-  async execute({
-    attributes,
-    filters,
-  }: QuestFiltersDTO): Promise<QuestResultsDTO[]> {
+  async execute({ attributes, filters }: QuestFiltersDTO): Promise<quest[]> {
     if (!attributes || !filters) {
       throw new AppError("Attributes not found", 404);
     }
@@ -61,6 +57,6 @@ export class GetQuestsByFiltersUseCase {
       throw new AppError("Quests not found", 404);
     }
 
-    return quests as QuestResultsDTO[];
+    return quests as quest[];
   }
 }

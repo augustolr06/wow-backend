@@ -77,6 +77,6 @@ export class GetWeaponStatsByFiltersUseCase {
       throw new AppError("WeaponStats not found", 404);
     }
 
-    return weaponStats as unknown as weapon_stats[];
+    return weaponStats as weapon_stats[];
   }
 }

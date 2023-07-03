@@ -31,7 +31,7 @@ export class GetQuestsByFiltersController {
     const handledFilters = arrayFiltros.map((filter) => {
       const [oldTable, column, operator, oldValue] = filter.split(".");
       let value;
-      const table = oldTable === "area" ? "area_quest_areaToarea" : oldTable; // TODO: remover isso se der certo no front
+      const table = oldTable === "area" ? "area_quest_areaToarea" : oldTable;
       if (numberFilters.includes(`${table}.${column}`)) {
         value = Number(oldValue);
       } else {
