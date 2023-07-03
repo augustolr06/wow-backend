@@ -2,9 +2,13 @@ import { quest } from "@prisma/client";
 import { AppError } from "../../../../errors/AppError";
 import { prisma } from "../../../../prisma/client";
 import { QuestFiltersDTO } from "../../dtos/QuestFiltersDTO";
+import { QuestResultsDTO } from "../../dtos/QuestResultsDTO";
 
 export class GetQuestsByFiltersUseCase {
-  async execute({ attributes, filters }: QuestFiltersDTO): Promise<quest[]> {
+  async execute({
+    attributes,
+    filters,
+  }: QuestFiltersDTO): Promise<QuestResultsDTO[]> {
     if (!attributes || !filters) {
       throw new AppError("Attributes not found", 404);
     }
@@ -34,7 +38,6 @@ export class GetQuestsByFiltersUseCase {
           ...acc,
           [filter.column]: {
             [filter.operator]: filter.value,
-            mode: "insensitive",
           },
         };
       }
@@ -44,14 +47,10 @@ export class GetQuestsByFiltersUseCase {
         [filter.table]: {
           [filter.column]: {
             [filter.operator]: filter.value,
-            mode: "insensitive",
           },
         },
       };
     }, {});
-
-    console.log("select", select);
-    console.log("where", where);
 
     const quests = await prisma.quest.findMany({
       select,
@@ -62,6 +61,6 @@ export class GetQuestsByFiltersUseCase {
       throw new AppError("Quests not found", 404);
     }
 
-    return quests as unknown as quest[];
+    return quests as QuestResultsDTO[];
   }
 }

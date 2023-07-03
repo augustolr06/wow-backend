@@ -16,8 +16,6 @@ export class GetItemsByFiltersController {
         .split(",")
         .filter((filter) => filter !== "") ?? [];
 
-    console.log("arrayAtributos", arrayAtributos);
-
     const separatedAttributes = arrayAtributos.map((attribute) => {
       const [table, column] = attribute.split(".");
       return { table, column };

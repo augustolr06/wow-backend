@@ -40,12 +40,10 @@ export class GetQuestsByFiltersController {
 
       if (arrayStringFilters.includes(`${table}.${column}`)) {
         value = oldValue.split("|");
-        console.log("value", value);
       }
 
       if (arrayNumberFilters.includes(`${table}.${column}`)) {
         value = oldValue.split("|").map((item) => Number(item));
-        console.log("value", value);
       }
 
       return { table, column, operator, value };

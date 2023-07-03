@@ -48,11 +48,8 @@ export class GetItemsByFiltersUseCase {
       };
     }, {});
 
-    console.log("select", select);
-    console.log("where", where);
-
     const items =
-      !select && !where
+      select && where
         ? await prisma.item.findMany({
             select,
             where,
